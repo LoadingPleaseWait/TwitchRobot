@@ -14,6 +14,9 @@ CHAN = "#mocitytexhardhead"                               # Channelname = #{Nick
 NICK = "loadingpw"                                # Nickname = Twitch username
 PASS = "insertoauthtokenhere"   # www.twitchapps.com/tmi/ will help to retrieve the required authkey
 
+RIGHT_MOTOR = 7
+LEFT_MOTOR = 12
+
 
 def send_pong(msg):
     con.send(bytes('PONG %s\r\n' % msg, 'UTF-8'))
@@ -59,6 +62,7 @@ def get_message(msg):
 def parse_message(msg):
     if len(msg) >= 1:
         msg = msg.split(' ')
+        # respond to commands from the chat
         options = {'!forward': command_forward,
                     '!left': command_left,
                     '!right': command_right,
@@ -83,7 +87,7 @@ def command_left():
 
 # right turn
 def command_right():
-    drive(50,50)
+    drive(50,25)
 
 # drive robot in reverse
 def command_backward():
@@ -91,11 +95,11 @@ def command_backward():
 
 # drive robot
 def drive(right_value, left_value):
-    right = GPIO.PWM(7, 50)
-    left = GPIO.PWM(12, 50)
+    right = GPIO.PWM(RIGHT_MOTOR, 50)
+    left = GPIO.PWM(LEFT_MOTOR, 50)
     right.start(right_value)
     left.start(left_value)
-    time.sleep(5) # wait a little
+    time.sleep(3) # wait a little
     right.stop()
     left.stop()
 
@@ -110,8 +114,8 @@ def main():
     while True:
         # setup raspberry pi GPIO
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(7, GPIO.OUT)
-        GPIO.setup(12, GPIO.OUT)
+        GPIO.setup(RIGHT_MOTOR, GPIO.OUT)
+        GPIO.setup(LEFT_MOTOR, GPIO.OUT)
         # read messages
         try:
             data = data+con.recv(1024).decode('UTF-8')
@@ -140,8 +144,9 @@ def main():
             print("Socket timeout")
 
         except KeyboardInterrupt:
-            GPIO.cleanup(7)
-            GPIO.cleanup(12)
+            print("Keyboard interrupt caught cleaning up GPIO")
+            GPIO.cleanup(RIGHT_MOTOR)
+            GPIO.cleanup(LEFT_MOTOR)
             sys.exit(0)
 
 
