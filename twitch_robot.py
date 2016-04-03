@@ -58,7 +58,7 @@ def get_message(msg):
         i += 1
     result = result.lstrip(':')
     return result
-
+  
 def parse_message(msg):
     if len(msg) >= 1:
         msg = msg.split(' ')
@@ -87,7 +87,7 @@ def command_left():
 
 # right turn
 def command_right():
-    drive(50,25)
+    drive(50,50)
 
 # drive robot in reverse
 def command_backward():
@@ -99,7 +99,6 @@ def drive(right_value, left_value):
     left = GPIO.PWM(LEFT_MOTOR, 50)
     right.start(right_value)
     left.start(left_value)
-    time.sleep(3) # wait a little
     right.stop()
     left.stop()
 
@@ -133,9 +132,9 @@ def main():
                     if line[1] == 'PRIVMSG':
                         sender = get_sender(line[0])
                         message = get_message(line)
-                        parse_message(message)
-
                         print(sender + ": " + message)
+                        parse_message(message)
+                        time.sleep(1);
 
         except socket.error:
             print("Socket died")
