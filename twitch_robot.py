@@ -87,7 +87,7 @@ def command_left():
 
 # right turn
 def command_right():
-    drive(50,50)
+    drive(50,25)
 
 # drive robot in reverse
 def command_backward():
@@ -99,6 +99,7 @@ def drive(right_value, left_value):
     left = GPIO.PWM(LEFT_MOTOR, 50)
     right.start(right_value)
     left.start(left_value)
+    time.sleep(3)
     right.stop()
     left.stop()
 
